@@ -4,8 +4,6 @@ import { NextResponse } from "next/server";
 // Tiempo de espera extendido para generaciones 4K complejas
 export const maxDuration = 300;
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 // DICCIONARIO CON TUS PROMPTS ORIGINALES COMPLETOS
 const PLANTILLAS_MAESTRAS: Record<string, string> = {
   spa: `Genera un ladingpage 4 vistas en una sola imagen, PANTALLA 1, PANTALLA 2, PANTALLA 3, PANTALA 4, en ultra alta resolución (4K), formato mockup profesional tipo Figma/Behance, en una cuadrícula 2x2 (2 filas x 2 columnas). Deben verse 4 pantallas rectangulares SEPARADAS de un sitio web (4 vistas distintas) para un SPA premium. Vista frontal recta (0° tilt), sin perspectiva chueca, sin marcos de celular, con márgenes uniformes entre pantallas y alineación perfecta.
@@ -81,6 +79,10 @@ PANTALLA 4: SERVICIOS + CONTACTO con formulario y links a redes profesionales.`
 
 export async function POST(req: Request) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Falta configurar GEMINI_API_KEY en Vercel.");
+
+    const ai = new GoogleGenAI({ apiKey });
     const { prompt, industria } = await req.json();
 
     // 1. Selección y personalización del prompt

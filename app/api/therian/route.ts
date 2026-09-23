@@ -1,12 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 const animales = ["red fox", "grey wolf", "lynx", "calico cat", "snow leopard", "coyote"];
 
 export async function POST(req: Request) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Falta configurar GEMINI_API_KEY en Vercel.");
+
+    const ai = new GoogleGenAI({ apiKey });
     const { image } = await req.json();
     if (!image) return NextResponse.json({ error: "Falta la imagen" }, { status: 400 });
 
